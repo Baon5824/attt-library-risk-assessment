@@ -7,6 +7,19 @@ const app = express();
 const PORT = Number(process.env.PORT || 8088);
 const DB_NAME = process.env.DB_NAME || process.env.MYSQLDATABASE || "library_risk_db";
 
+function getDatabaseConfig() {
+  const hasRailwayMysql = Boolean(process.env.MYSQLHOST);
+
+  return {
+    host: hasRailwayMysql ? process.env.MYSQLHOST : process.env.DB_HOST || "127.0.0.1",
+    port: Number(hasRailwayMysql ? process.env.MYSQLPORT || 3306 : process.env.DB_PORT || 3306),
+    user: hasRailwayMysql ? process.env.MYSQLUSER : process.env.DB_USER || "root",
+    password: hasRailwayMysql ? process.env.MYSQLPASSWORD || "" : process.env.DB_PASSWORD || "",
+    waitForConnections: true,
+    connectionLimit: 10
+  };
+}
+
 let pool = null;
 let dbError = null;
 
@@ -14,14 +27,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
 async function initDatabase() {
-  const baseConfig = {
-    host: process.env.DB_HOST || process.env.MYSQLHOST || "127.0.0.1",
-    port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
-    user: process.env.DB_USER || process.env.MYSQLUSER || "root",
-    password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || "",
-    waitForConnections: true,
-    connectionLimit: 10
-  };
+  const baseConfig = getDatabaseConfig();
 
   if (!process.env.MYSQLHOST) {
     const adminConnection = await mysql.createConnection(baseConfig);
