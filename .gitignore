@@ -1,0 +1,9 @@
+node_modules/
+.env
+npm-debug.log*
+mysql-reset*.log
+mysql-reset*.err.log
+mysql-reset*.out.log
+reset-mysql-root.ps1
+Nhom19_XayDungQuyTrinhDanhGiaRuiRoATTT_ISO27001_ThuVien/
+Nhom19_XayDungQuyTrinhDanhGiaRuiRoATTT_ISO27001_ThuVien.zip

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - Library Risk Assessment</title>
+  <link rel="stylesheet" href="styles.css?v=20260619-6">
+</head>
+<body>
+  <main id="loginPage" class="login-page">
+    <section class="login-box" aria-labelledby="loginTitle">
+      <header class="login-header">
+        <div class="premium-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <path d="M16 4 25 8v7.4c0 5.8-3.7 10-9 12.6-5.3-2.6-9-6.8-9-12.6V8l9-4Z"></path>
+            <path d="M12 16.2 14.7 19 20.5 12.8"></path>
+          </svg>
+        </div>
+        <div class="security-badge">
+          <span></span>
+          ISO/IEC 27001
+        </div>
+        <h1 id="loginTitle">ISO Library Risk</h1>
+        <p>Enter your account to continue securely</p>
+      </header>
+
+      <div id="loginError" class="login-error hidden" role="alert">
+        Tên đăng nhập hoặc mật khẩu không đúng.
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <input id="username" name="username" type="text" autocomplete="username" placeholder="Username or email">
+          <p id="usernameError" class="field-error hidden">Vui lòng nhập tên đăng nhập.</p>
+        </div>
+
+        <div class="form-group">
+          <div class="password-field">
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password">
+            <button id="passwordToggle" type="button" aria-label="Hiện mật khẩu">Show</button>
+          </div>
+          <p id="passwordError" class="field-error hidden">Vui lòng nhập mật khẩu.</p>
+        </div>
+
+        <label class="remember-row">
+          <input id="rememberLogin" type="checkbox">
+          <span>Remember me</span>
+        </label>
+
+        <button class="btn-primary" type="submit">
+          <span>Continue</span>
+        </button>
+      </form>
+
+      <button class="forgot-link" type="button">Forgot password?</button>
+    </section>
+  </main>
+
+  <main id="dashboardPage" class="dashboard-page hidden">
+    <header class="dashboard-topbar">
+      <div>
+        <p>ISO/IEC 27001</p>
+        <h1>Dashboard đánh giá rủi ro</h1>
+      </div>
+      <button id="logoutButton" class="logout-button" type="button">Đăng xuất</button>
+    </header>
+
+    <section class="assessment-shell">
+      <div class="wizard-header">
+        <div>
+          <span class="dashboard-pill">Đã đăng nhập</span>
+          <h2>Quy trình đánh giá rủi ro</h2>
+          <p id="userSummary">Đang tải thông tin người dùng...</p>
+        </div>
+        <div class="step-indicator" aria-label="Các trang đánh giá">
+          <button class="step-dot active" type="button" data-step-target="1">
+            <strong>01</strong>
+            <span>Thông tin</span>
+          </button>
+          <button class="step-dot" type="button" data-step-target="2">
+            <strong>02</strong>
+            <span>Khả năng</span>
+          </button>
+          <button class="step-dot" type="button" data-step-target="3">
+            <strong>03</strong>
+            <span>Ảnh hưởng</span>
+          </button>
+          <button class="step-dot" type="button" data-step-target="4">
+            <strong>04</strong>
+            <span>Kết quả</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="wizard-pages">
+        <section class="wizard-page active" data-step="1" aria-labelledby="step1Title">
+          <div class="page-title">
+            <span>Trang 1</span>
+            <h3 id="step1Title">Thông tin rủi ro</h3>
+            <p>Chọn tài sản, chọn nhóm rủi ro trong thư viện mẫu, sau đó nhập mô tả tình huống cần đánh giá.</p>
+          </div>
+
+          <div class="risk-form-grid">
+            <label class="field-block full">
+              <span>Tài sản cần đánh giá</span>
+              <select id="assetSelect"></select>
+            </label>
+
+            <label class="field-block full">
+              <span>Nhóm rủi ro</span>
+              <select id="riskSelect"></select>
+            </label>
+
+            <label class="field-block full">
+              <span>Mô tả rủi ro</span>
+              <textarea id="riskDescription" rows="4" placeholder="Ví dụ: Dữ liệu mượn trả có thể bị mất do chưa có sao lưu định kỳ.">Dữ liệu mượn trả có thể bị mất do chưa có sao lưu định kỳ.</textarea>
+            </label>
+          </div>
+
+          <div class="wizard-actions end compact-actions">
+            <button id="analyzeRiskButton" class="wizard-next" type="button">Tiếp tục</button>
+          </div>
+
+          <div id="analysisCard" class="analysis-card hidden" aria-live="polite">
+            <div>
+              <span id="confidenceBadge" class="analysis-badge">Đang phân tích</span>
+              <h4 id="suggestedRiskName">Thông báo</h4>
+              <p id="analysisNote"></p>
+            </div>
+
+            <div id="matchedKeywordBox" class="matched-keyword-box hidden detail-hidden">
+              <span>Tín hiệu nhận diện</span>
+              <p id="matchedKeywordText"></p>
+            </div>
+
+            <div class="analysis-grid detail-hidden">
+              <div class="auto-info">
+                <span>Mối đe dọa</span>
+                <p id="threatText"></p>
+              </div>
+
+              <div class="auto-info">
+                <span>Điểm yếu/lỗ hổng</span>
+                <p id="weaknessText"></p>
+              </div>
+            </div>
+
+            <label class="field-block manual-risk-select detail-hidden">
+              <span>Chọn checklist khác nếu cần</span>
+              <select id="manualRiskSelect"></select>
+            </label>
+
+            <div class="wizard-actions end compact-actions">
+              <button id="confirmRiskButton" class="wizard-next" type="button">Sử dụng checklist này</button>
+            </div>
+          </div>
+
+          <div class="wizard-actions end hidden">
+            <button id="proceedChecklistButton" class="wizard-next" type="button" disabled>Tiếp tục</button>
+          </div>
+        </section>
+
+        <section class="wizard-page" data-step="2" aria-labelledby="step2Title">
+          <div class="page-title">
+            <span>Trang 2</span>
+            <h3 id="step2Title">Checklist khả năng xảy ra</h3>
+          </div>
+
+          <div id="likelihoodChecklist" class="checklist-list"></div>
+
+          <div class="wizard-actions">
+            <button class="wizard-back" type="button" data-prev-step="1">Quay lại</button>
+            <button class="wizard-next" type="button" data-next-step="3">Tiếp tục</button>
+          </div>
+        </section>
+
+        <section class="wizard-page" data-step="3" aria-labelledby="step3Title">
+          <div class="page-title">
+            <span>Trang 3</span>
+            <h3 id="step3Title">Checklist ảnh hưởng</h3>
+          </div>
+
+          <div id="impactChecklist" class="checklist-list"></div>
+
+          <div class="wizard-actions">
+            <button class="wizard-back" type="button" data-prev-step="2">Quay lại</button>
+            <button class="wizard-next" type="button" id="calculateButton">Xem kết quả</button>
+          </div>
+        </section>
+
+        <section class="wizard-page" data-step="4" aria-labelledby="step4Title">
+          <div class="page-title">
+            <span>Trang 4</span>
+            <h3 id="step4Title">Kết quả đánh giá</h3>
+          </div>
+
+          <div id="resultPanel" class="result-panel"></div>
+
+          <div class="wizard-actions">
+            <button class="wizard-back" type="button" data-prev-step="3">Quay lại</button>
+            <button class="wizard-next" type="button" id="saveRiskButton">Lưu vào hồ sơ</button>
+          </div>
+
+          <p id="saveStatus" class="save-status hidden"></p>
+        </section>
+      </div>
+    </section>
+
+    <section class="risk-register-section" aria-labelledby="riskRegisterTitle">
+      <div class="register-header">
+        <div>
+          <h2 id="riskRegisterTitle">Hồ sơ rủi ro đã lưu</h2>
+        </div>
+        <button id="refreshRecordsButton" class="logout-button" type="button">Tải lại</button>
+      </div>
+
+      <div class="register-table-wrap">
+        <table class="risk-records-table">
+          <thead>
+            <tr>
+              <th>Mã rủi ro</th>
+              <th>Tài sản</th>
+              <th>Mô tả</th>
+              <th>Khả năng</th>
+              <th>Ảnh hưởng</th>
+              <th>Điểm</th>
+              <th>Mức</th>
+              <th>Ngày đánh giá</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="riskRecordsBody">
+            <tr>
+              <td class="empty-row" colspan="9">Chưa có hồ sơ rủi ro.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="recordDetailPanel" class="record-detail-panel hidden" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="app.js?v=20260619-6"></script>
+</body>
+</html>
